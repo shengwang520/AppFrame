@@ -2,8 +2,8 @@ package com.common.app.network;
 
 
 import com.common.app.common.base.BaseApplication;
-import com.common.app.common.utils.FileUtils;
 import com.common.app.network.base.BaseUrlConfig;
+import com.sheng.wang.media.utils.FileUtils;
 
 import java.io.File;
 import java.io.IOException;

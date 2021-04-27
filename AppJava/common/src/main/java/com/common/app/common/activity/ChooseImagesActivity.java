@@ -25,17 +25,19 @@ import com.common.app.R;
 import com.common.app.common.base.BaseActivity;
 import com.common.app.common.base.BaseMenuHolder;
 import com.common.app.common.base.ToolbarFinder;
-import com.common.app.common.chooseimgs.ImageBean;
-import com.common.app.common.chooseimgs.ImageFolder;
-import com.common.app.common.chooseimgs.RxJava2GetImageImpl2;
 import com.common.app.common.dexterpermission.DexterPermissionsUtil;
-import com.common.app.common.utils.ImageIntentUtils;
+import com.common.app.common.utils.CropUtils;
 import com.common.app.common.utils.ToastUtils;
 import com.jude.easyrecyclerview.EasyRecyclerView;
 import com.jude.easyrecyclerview.adapter.BaseViewHolder;
 import com.jude.easyrecyclerview.adapter.RecyclerArrayAdapter;
 import com.jude.easyrecyclerview.decoration.SpaceDecoration;
 import com.orhanobut.logger.Logger;
+import com.sheng.wang.media.FileCompat;
+import com.sheng.wang.media.impl.CallBack;
+import com.sheng.wang.media.model.FileBean;
+import com.sheng.wang.media.model.FileFolder;
+import com.sheng.wang.media.utils.ImageIntentUtils;
 import com.yalantis.ucrop.UCrop;
 
 import java.util.ArrayList;
@@ -50,16 +52,16 @@ public class ChooseImagesActivity extends BaseActivity {
     private static final String ISMORE_KEY = "choose_more";
     private static final String CHOOSE_NUM = "choose_num";
     private static final String IS_CROP_KEY = "choose_crop";
-    public static int MAX_NUM =6;//多选的最大数量
+    public static int MAX_NUM = 6;//多选的最大数量
     private String takePath;//照相路径
-    private ArrayList<ImageBean> choosedData;
-    private ArrayList<ImageBean> results;
-    private ChooseImgsHolder holder;
+    private ArrayList<FileBean> chooseData;
+    private ArrayList<FileBean> results;
+    private ChooseImagesHolder holder;
     private BaseMenuHolder menuHolder;
-    private ImgsAdapter adapter;
-    private List<ImageBean> listImgs;
+    private ImagesAdapter adapter;
+    private List<FileBean> listImages;
 
-    private ImageFolder imageFolder;
+    private FileFolder imageFolder;
     private ChooseImageFolderPopWindow popWindow;
 
     private boolean isMore = true;//默认为多选
@@ -81,11 +83,11 @@ public class ChooseImagesActivity extends BaseActivity {
         return new Intent(context, ChooseImagesActivity.class).putExtra(ISMORE_KEY, isMore).putExtra(IS_CROP_KEY, isCorp);
     }
 
-    public static Intent newIntent(Context context, ArrayList<ImageBean> choosedData) {
+    public static Intent newIntent(Context context, ArrayList<FileBean> choosedData) {
         return new Intent(context, ChooseImagesActivity.class).putParcelableArrayListExtra(DATA, choosedData);
     }
 
-    public static Intent newIntent(Context context, ArrayList<ImageBean> choosedData, int num) {
+    public static Intent newIntent(Context context, ArrayList<FileBean> choosedData, int num) {
         return new Intent(context, ChooseImagesActivity.class).putParcelableArrayListExtra(DATA, choosedData).putExtra(CHOOSE_NUM, num);
     }
 
@@ -95,24 +97,24 @@ public class ChooseImagesActivity extends BaseActivity {
         setContentView(R.layout.x_activity_choose_imgs);
         isMore = getIntent().getBooleanExtra(ISMORE_KEY, true);
         isCrop = getIntent().getBooleanExtra(IS_CROP_KEY, false);
-        choosedData = new ArrayList<>();
-        listImgs = new ArrayList<>();
+        chooseData = new ArrayList<>();
+        listImages = new ArrayList<>();
         results = getIntent().getParcelableArrayListExtra(DATA);
-        MAX_NUM = getIntent().getIntExtra(CHOOSE_NUM,6);
+        MAX_NUM = getIntent().getIntExtra(CHOOSE_NUM, 6);
 
-        holder = new ChooseImgsHolder(this);
-        adapter = new ImgsAdapter(this);
+        holder = new ChooseImagesHolder(this);
+        adapter = new ImagesAdapter(this);
         holder.recyclerView.setAdapterWithProgress(adapter);
 
         popWindow = new ChooseImageFolderPopWindow(this);
         popWindow.setOnClickChooseImageListener(new ChooseImageFolderPopWindow.OnClickChooseImageListener() {
             @Override
-            public void onChooseImage(ImageFolder image) {
+            public void onChooseImage(FileFolder image) {
                 imageFolder = image;
                 adapter.clear();
-                adapter.add(new ImageBean(true));
-                adapter.addAll(imageFolder.getImages(choosedData));
-                holder.initImageFolder(imageFolder.getName());
+                adapter.add(new FileBean(true));
+                adapter.addAll(imageFolder.getImages(chooseData));
+                holder.initImageFolder(imageFolder.name);
             }
         });
 
@@ -123,51 +125,51 @@ public class ChooseImagesActivity extends BaseActivity {
             }
         });
 
-        loadImgs();
+        loadImages();
     }
 
     /**
      * 加载图片
      */
-    private void loadImgs() {
-        RxJava2GetImageImpl2 loadingImgsTask = new RxJava2GetImageImpl2(this, new RxJava2GetImageImpl2.CallBack() {
+    private void loadImages() {
+        FileCompat fileCompat = new FileCompat(this, new CallBack() {
             @Override
-            public void onSuccess(List<ImageFolder> results) {
+            public void onSuccess(List<FileFolder> results) {
                 popWindow.init(results);
                 imageFolder = results.get(0);
-                holder.initImageFolder(imageFolder.getName());
+                holder.initImageFolder(imageFolder.name);
                 initImgs();
             }
 
             @Override
             public void onError() {
-                holder.recyclerView.showEmpty();
+
             }
         });
-        loadingImgsTask.getPhoneImages();
+        fileCompat.loadImages();
     }
 
     /**
      * 初始化图片显示处理
      */
     private void initImgs() {
-        listImgs.clear();
-        listImgs.addAll(imageFolder.images);
-        List<ImageBean> chooses = new ArrayList<>();
+        listImages.clear();
+        listImages.addAll(imageFolder.images);
+        List<FileBean> chooses = new ArrayList<>();
         if (results != null && !results.isEmpty()) {
-            for (ImageBean choose : results) {
-                for (ImageBean img : listImgs) {
-                    if (TextUtils.equals(choose.getImgpath(), img.getImgpath())) {
-                        img.setIsChoose(true);
+            for (FileBean choose : results) {
+                for (FileBean img : listImages) {
+                    if (TextUtils.equals(choose.getFilePathQ(), img.getFilePathQ())) {
+                        img.isChoose = true;
                         chooses.add(img);
                     }
                 }
             }
-            choosedData.addAll(chooses);
+            chooseData.addAll(chooses);
         }
 
-        adapter.add(new ImageBean(true));
-        adapter.addAll(listImgs);
+        adapter.add(new FileBean(true));
+        adapter.addAll(listImages);
     }
 
 
@@ -176,14 +178,14 @@ public class ChooseImagesActivity extends BaseActivity {
         if (isMore) {
             holder.toolbar.inflateMenu(R.menu.menu_view);
             menuHolder = new BaseMenuHolder(holder.toolbar);
-            menuHolder.init(String.format(getString(R.string.confirm_s), String.valueOf(choosedData.size())));
+            menuHolder.init(String.format(getString(R.string.confirm_s), String.valueOf(chooseData.size())));
             menuHolder.oneItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    if (choosedData.isEmpty()) {
+                    if (chooseData.isEmpty()) {
                         ToastUtils.show(getActivity(), getString(R.string.least_one_choice));
                     } else {
-                        setResult(RESULT_OK, new Intent().putParcelableArrayListExtra(RESULT_DATA, choosedData));
+                        setResult(RESULT_OK, new Intent().putParcelableArrayListExtra(RESULT_DATA, chooseData));
                         finish();
                     }
                     return false;
@@ -200,16 +202,16 @@ public class ChooseImagesActivity extends BaseActivity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CAMERA://照相返回结果
-                    ImageBean imageFloder = new ImageBean(takePath);
+                    FileBean fileBean = new FileBean(takePath);
                     if (isMore) {//多选逻辑
-                        choosedData.add(0, imageFloder);
-                        setResult(RESULT_OK, new Intent().putParcelableArrayListExtra(RESULT_DATA, choosedData));
+                        chooseData.add(0, fileBean);
+                        setResult(RESULT_OK, new Intent().putParcelableArrayListExtra(RESULT_DATA, chooseData));
                         finish();
                     } else {//单选
                         if (isCrop) {
-                            ImageIntentUtils.crop(getActivity(), imageFloder.getImgpath());
+                            CropUtils.crop(getActivity(), fileBean.getFilePathQ());
                         } else {
-                            setResult(RESULT_OK, new Intent().putExtra(RESULT_DATA, imageFloder));
+                            setResult(RESULT_OK, new Intent().putExtra(RESULT_DATA, fileBean));
                             finish();
                         }
                     }
@@ -220,7 +222,7 @@ public class ChooseImagesActivity extends BaseActivity {
                         String cropPath = resultUri.getPath();
                         if (!TextUtils.isEmpty(cropPath)) {
                             Logger.d("cropPath:" + cropPath);
-                            setResult(RESULT_OK, new Intent().putExtra(RESULT_DATA, new ImageBean(cropPath)));
+                            setResult(RESULT_OK, new Intent().putExtra(RESULT_DATA, new FileBean(cropPath)));
                             finish();
                         }
                     }
@@ -248,12 +250,12 @@ public class ChooseImagesActivity extends BaseActivity {
         });
     }
 
-    class ChooseImgsHolder extends ToolbarFinder {
+    class ChooseImagesHolder extends ToolbarFinder {
         private EasyRecyclerView recyclerView;
         private TextView tvName;
         private View bottomView;
 
-        ChooseImgsHolder(Activity activity) {
+        ChooseImagesHolder(Activity activity) {
             super(activity);
             initTab(getTextView(getString(R.string.selector_picture)));
             recyclerView = activity.findViewById(R.id.easyRecyclerView);
@@ -271,26 +273,26 @@ public class ChooseImagesActivity extends BaseActivity {
         }
     }
 
-    class ImgsAdapter extends RecyclerArrayAdapter<ImageBean> {
+    class ImagesAdapter extends RecyclerArrayAdapter<FileBean> {
 
-        ImgsAdapter(Context context) {
+        ImagesAdapter(Context context) {
             super(context);
         }
 
         @Override
-        public BaseViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ImgsItemHolder(parent, R.layout.x_item_choose_imgs);
+        public BaseViewHolder<FileBean> OnCreateViewHolder(ViewGroup parent, int viewType) {
+            return new ImagesItemHolder(parent, R.layout.x_item_choose_imgs);
         }
 
     }
 
-    class ImgsItemHolder extends BaseViewHolder<ImageBean> {
+    class ImagesItemHolder extends BaseViewHolder<FileBean> {
 
         private ImageView iv;
         private AppCompatCheckedTextView checkBox;
         private TextView tv_camera;
 
-        ImgsItemHolder(ViewGroup parent, @LayoutRes int res) {
+        ImagesItemHolder(ViewGroup parent, @LayoutRes int res) {
             super(parent, res);
             iv = itemView.findViewById(R.id.iv);
             checkBox = itemView.findViewById(R.id.check);
@@ -298,9 +300,9 @@ public class ChooseImagesActivity extends BaseActivity {
         }
 
         @Override
-        public void setData(final ImageBean data) {
+        public void setData(final FileBean data) {
             super.setData(data);
-            if (data.isCamera()) {//第1个为相机
+            if (data.isCamera) {//第1个为相机
                 checkBox.setVisibility(View.GONE);
                 iv.setVisibility(View.GONE);
                 tv_camera.setVisibility(View.VISIBLE);
@@ -310,7 +312,7 @@ public class ChooseImagesActivity extends BaseActivity {
                     public void onClick(View view) {
                         //点击去拍照
                         if (isMore) {//如果是多选，需要判断是否已经选够
-                            if (choosedData.size() == MAX_NUM) {
+                            if (chooseData.size() == MAX_NUM) {
                                 ToastUtils.show(getActivity(), String.format(getString(R.string.choose_more_pictures_s), String.valueOf(MAX_NUM)));
                             } else {
                                 cameraImg();
@@ -325,34 +327,34 @@ public class ChooseImagesActivity extends BaseActivity {
                 iv.setVisibility(View.VISIBLE);
                 checkBox.setVisibility(View.VISIBLE);
                 Glide.with(getActivity())
-                        .load("file://" + data.getImgpath())
+                        .load(data.getFilePathQ())
                         .apply(new RequestOptions()
                                 .placeholder(R.drawable.x_loading_image)
                                 .error(R.drawable.x_loading_image))
                         .into(iv);
-                checkBox.setChecked(data.isChoose());
+                checkBox.setChecked(data.isChoose);
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (isMore) {//如果是多选
-                            if (data.isChoose()) {
-                                choosedData.remove(data);
-                                data.setIsChoose(false);
+                            if (data.isChoose) {
+                                chooseData.remove(data);
+                                data.isChoose = false;
                                 checkBox.setChecked(false);
                             } else {
-                                if (choosedData.size() == MAX_NUM) {
+                                if (chooseData.size() == MAX_NUM) {
                                     ToastUtils.show(getActivity(), String.format(getString(R.string.choose_more_pictures_s), String.valueOf(MAX_NUM)));
                                 } else {
-                                    data.setIsChoose(true);
-                                    choosedData.add(data);
+                                    data.isChoose = true;
+                                    chooseData.add(data);
                                     checkBox.setChecked(true);
                                 }
                             }
 
-                            menuHolder.init(String.format(getString(R.string.confirm_s), String.valueOf(choosedData.size())));
+                            menuHolder.init(String.format(getString(R.string.confirm_s), String.valueOf(chooseData.size())));
                         } else {//单选
                             if (isCrop) {
-                                ImageIntentUtils.crop(getActivity(), data.getImgpath());
+                                CropUtils.crop(getActivity(), data.getFilePathQ());
                             } else {
                                 setResult(RESULT_OK, new Intent().putExtra(RESULT_DATA, data));
                                 finish();

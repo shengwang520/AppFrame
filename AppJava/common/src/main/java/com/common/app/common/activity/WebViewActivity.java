@@ -27,7 +27,6 @@ import org.apache.http.util.EncodingUtils;
 
 /**
  * 网页加载
- * Created by xiangzi on 2016/8/4.
  */
 public class WebViewActivity extends BaseActivity {
     private WebHolder holder;

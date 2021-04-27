@@ -46,7 +46,7 @@ public class BigImagesActivity extends BaseActivity {
     private static final String DATA = "DATA";
     private static final String POSITION_KEY = "POSITION";
 
-    private BigImgsHolder bigImgsHolder;
+    private BigImagesHolder bigImgsHolder;
     private ArrayList<String> listImgs;//图片集
     private int allnum;//位置,总数
 
@@ -83,7 +83,7 @@ public class BigImagesActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         UiCompat.setImageTransparent(this);
         setContentView(R.layout.x_activity_bigimgs);
-        bigImgsHolder = new BigImgsHolder(this);
+        bigImgsHolder = new BigImagesHolder(this);
 
         listImgs = getIntent().getStringArrayListExtra(DATA);
         if (listImgs.isEmpty()) finish();
@@ -210,12 +210,12 @@ public class BigImagesActivity extends BaseActivity {
         }
     }
 
-    private class BigImgsHolder extends BaseViewFinder {
+    private class BigImagesHolder extends BaseViewFinder {
 
         private ViewPager viewPager;
         private TextView tv_num;
 
-        BigImgsHolder(Activity activity) {
+        BigImagesHolder(Activity activity) {
             super(activity);
             viewPager = activity.findViewById(R.id.x_bigimgs_viewpagere);
             tv_num = activity.findViewById(R.id.x_bigimgs_tv_num);

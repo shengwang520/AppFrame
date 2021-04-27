@@ -17,12 +17,12 @@ import com.bumptech.glide.Glide;
 import com.common.app.R;
 import com.common.app.common.base.BasePopupWindow;
 import com.common.app.common.base.BaseViewItemFinder;
-import com.common.app.common.chooseimgs.ImageFolder;
 import com.common.app.common.utils.GlideUtil;
 import com.common.app.common.utils.MetricsUtils;
 import com.jude.easyrecyclerview.adapter.BaseViewHolder;
 import com.jude.easyrecyclerview.adapter.RecyclerArrayAdapter;
 import com.jude.easyrecyclerview.decoration.DividerDecoration;
+import com.sheng.wang.media.model.FileFolder;
 
 import java.util.List;
 
@@ -54,7 +54,7 @@ public class ChooseImageFolderPopWindow extends BasePopupWindow {
     /**
      * 设置数据
      */
-    public void init(List<ImageFolder> imageFolders) {
+    public void init(List<FileFolder> imageFolders) {
         adapter.clear();
         adapter.addAll(imageFolders);
     }
@@ -73,7 +73,7 @@ public class ChooseImageFolderPopWindow extends BasePopupWindow {
     }
 
     public interface OnClickChooseImageListener {
-        void onChooseImage(ImageFolder imageFolder);
+        void onChooseImage(FileFolder imageFolder);
     }
 
     private class ImageFolderHolder extends BaseViewItemFinder {
@@ -87,7 +87,7 @@ public class ChooseImageFolderPopWindow extends BasePopupWindow {
         }
     }
 
-    private class ImageFolderAdapter extends RecyclerArrayAdapter<ImageFolder> {
+    private class ImageFolderAdapter extends RecyclerArrayAdapter<FileFolder> {
 
         ImageFolderAdapter(Context context) {
             super(context);
@@ -99,7 +99,7 @@ public class ChooseImageFolderPopWindow extends BasePopupWindow {
         }
     }
 
-    private class ImageFolderItemHolder extends BaseViewHolder<ImageFolder> {
+    private class ImageFolderItemHolder extends BaseViewHolder<FileFolder> {
         private ImageView ivImage;
         private TextView tvName, tvNum;
 
@@ -111,10 +111,10 @@ public class ChooseImageFolderPopWindow extends BasePopupWindow {
         }
 
         @Override
-        public void setData(final ImageFolder data) {
+        public void setData(final FileFolder data) {
             super.setData(data);
-            Glide.with(getContext()).load(data.getFirstImagePath()).apply(GlideUtil.getRequestOptions()).into(ivImage);
-            tvName.setText(data.getName());
+            Glide.with(getContext()).load(data.firstFileBean.getFilePathQ()).apply(GlideUtil.getRequestOptions()).into(ivImage);
+            tvName.setText(data.name);
             tvNum.setText(String.format("%s张", String.valueOf(data.images.size())));
 
             itemView.setOnClickListener(new View.OnClickListener() {

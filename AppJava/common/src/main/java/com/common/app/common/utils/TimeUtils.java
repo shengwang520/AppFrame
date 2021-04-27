@@ -57,4 +57,18 @@ public class TimeUtils {
         c.add(Calendar.MONTH, month);
         return c.getTime();
     }
+
+    /**
+     * 格式化时间
+     *
+     * @param pattern 时间输出格式
+     */
+    public static String formatLong2String(long time, String pattern) {
+        if (time > 0) {
+            SimpleDateFormat format = new SimpleDateFormat(pattern, Locale.getDefault());
+            return format.format(new Date(time));
+        } else {
+            return "";
+        }
+    }
 }
