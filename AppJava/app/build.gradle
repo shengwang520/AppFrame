@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 30
+
     defaultConfig {
         applicationId "com.common.app"
         minSdkVersion 19
@@ -11,8 +12,6 @@ android {
         multiDexEnabled true
 
     }
-
-    useLibrary 'org.apache.http.legacy'
 
     signingConfigs {
 //        release {
@@ -26,8 +25,12 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     applicationVariants.all { variant ->
@@ -43,45 +46,9 @@ android {
         }
 
     }
-
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api 'com.orhanobut:logger:1.4'//打印数据框架
-
-    api 'com.google.code.gson:gson:2.8.6'
-    api 'de.hdodenhof:circleimageview:3.0.0'//圆角控件
-    api 'com.github.chrisbanes.photoview:library:1.2.4'//图片手势放大缩小
-
-    api 'com.karumi:dexter:6.2.2'//6.0+权限管理
-
-    api 'com.jude:easyrecyclerview:4.4.2' //列表的扩展
-    api('org.apache.httpcomponents:httpcore:4.4.10')
-
-    //图片加载库
-    api 'com.github.bumptech.glide:glide:4.11.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
-
-    api 'com.github.yalantis:ucrop:2.2.6'//图片裁切
-
-    api 'com.contrarywind:Android-PickerView:4.1.9'//选择器
-
-    api 'com.squareup.okhttp3:okhttp:4.2.1'
-    //RxJava库的引用
-    api 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    api 'io.reactivex.rxjava2:rxjava:2.2.2'
-
-    //retrofit网络请求框架的引用
-    api 'com.squareup.retrofit2:retrofit:2.7.2'
-    api 'com.squareup.retrofit2:converter-gson:2.7.2'
-    api 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
-    api 'com.squareup.okhttp3:logging-interceptor:4.2.1'
-
-    api 'org.greenrobot:eventbus:3.1.1'//事件通知处理
-
-    api 'com.jjoe64:graphview:4.2.2'
-
-    api project(':database')
-    api project(':ImageChoose')
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
 }

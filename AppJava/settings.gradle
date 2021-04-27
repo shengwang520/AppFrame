@@ -1,2 +1,2 @@
-include ':app',':aliyunoss',':ImageChoose'
-include ':database'
+include ':app'
+include ':common',':aliyunoss',':ImageChoose'
