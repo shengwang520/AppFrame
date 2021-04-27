@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/AppBase.iml" filepath="$PROJECT_DIR$/.idea/AppBase.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ImageChoose/AppBase.ImageChoose.iml" filepath="$PROJECT_DIR$/.idea/modules/ImageChoose/AppBase.ImageChoose.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/aliyunoss/AppBase.aliyunoss.iml" filepath="$PROJECT_DIR$/.idea/modules/aliyunoss/AppBase.aliyunoss.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/AppBase.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/AppBase.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/database/AppBase.database.iml" filepath="$PROJECT_DIR$/.idea/modules/database/AppBase.database.iml" />
+    </modules>
+  </component>
+</project>
