@@ -61,6 +61,4 @@ dependencies {
     api 'com.squareup.okhttp3:logging-interceptor:4.2.1'
 
     api 'org.greenrobot:eventbus:3.1.1'//事件通知处理
-
-    api project(':ImageChoose')
 }
