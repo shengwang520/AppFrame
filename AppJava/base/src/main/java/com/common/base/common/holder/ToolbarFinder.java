@@ -11,7 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.common.base.R;
 
-public class ToolbarFinder extends BaseViewFinder {
+public abstract class ToolbarFinder extends BaseViewFinder {
     private AppCompatActivity appCompatActivity;
     public Toolbar toolbar;
 
