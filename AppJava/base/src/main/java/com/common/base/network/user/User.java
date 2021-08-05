@@ -3,6 +3,8 @@ package com.common.base.network.user;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.common.base.common.base.App;
+
 /**
  * 用户信息保存
  */
@@ -12,15 +14,15 @@ public class User {
     private volatile static User instance;
     private SharedPreferences sharedPreferences;
 
-    public User(Context context) {
-        sharedPreferences = context.getSharedPreferences(DATA, Context.MODE_PRIVATE);
+    public User() {
+        sharedPreferences = App.getInstance().getSharedPreferences(DATA, Context.MODE_PRIVATE);
     }
 
-    public static User getInstance(Context context) {
+    public static User getInstance() {
         if (instance == null) {
             synchronized (User.class) {
                 if (null == instance) {
-                    instance = new User(context);
+                    instance = new User();
                 }
             }
         }
