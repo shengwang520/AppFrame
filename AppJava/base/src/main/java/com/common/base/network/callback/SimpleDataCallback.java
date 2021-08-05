@@ -3,6 +3,9 @@ package com.common.base.network.callback;
 import android.app.Dialog;
 import android.content.Context;
 
+/**
+ * 数据获取简单实现
+ */
 public class SimpleDataCallback<T> implements IDataCallback<T> {
 
     private Context context;

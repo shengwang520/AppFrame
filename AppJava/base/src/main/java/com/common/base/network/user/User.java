@@ -3,6 +3,9 @@ package com.common.base.network.user;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+/**
+ * 用户信息保存
+ */
 public class User {
     private static final String DATA = "data_user";
 
@@ -26,7 +29,7 @@ public class User {
 
 
     /**
-     *
+     * 退出登录，清空数据
      */
     public void logout() {
         sharedPreferences.edit().clear().apply();

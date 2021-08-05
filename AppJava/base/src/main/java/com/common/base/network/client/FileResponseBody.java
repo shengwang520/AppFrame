@@ -14,6 +14,9 @@ import okio.ForwardingSource;
 import okio.Okio;
 import okio.Source;
 
+/**
+ * api 下载文件进度封装
+ */
 public class FileResponseBody extends ResponseBody {
     private final ResponseBody mResponseBody;
     private final OnProgressListener mOnProgressListener;
