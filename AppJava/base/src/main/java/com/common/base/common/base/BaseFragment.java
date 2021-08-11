@@ -15,9 +15,6 @@ import androidx.fragment.app.Fragment;
 public abstract class BaseFragment extends Fragment {
     public static final String DATA_KEY = "data_page";//页面page
 
-    protected int page;
-    protected boolean isMore;
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
